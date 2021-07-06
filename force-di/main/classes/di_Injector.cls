@@ -60,7 +60,15 @@ public class di_Injector {
      * Creates an instance of the object configured for the class name binding
      **/
     public Object getInstance(Type developerNameByType) {
-        return getInstance(developerNameByType?.getName()?.toLowerCase(), null);
+        return getInstance(developerNameByType?.getName()?.toLowerCase(), null, false);
+    }
+
+    /**
+     * Creates an instance of the object configured for the class name binding
+     *   (if newInstance is specified, always gets a fresh instance)
+     **/
+    public Object getInstance(Type developerNameByType, Boolean newInstance) {
+        return getInstance(developerNameByType?.getName()?.toLowerCase(), null, newInstance);
     }
 
     /**
@@ -72,10 +80,27 @@ public class di_Injector {
     }
 
     /**
+     * Creates an instance of the object configured for the class name binding
+     *   (if params is specified, implicitly uses the Provider interface)
+     *   (if newInstance is specified, always gets a fresh instance)
+     **/
+    public Object getInstance(Type developerNameByType, Object params, Boolean newInstance) {
+        return getInstance(developerNameByType?.getName()?.toLowerCase(), params, newInstance);
+    }
+
+    /**
      * Creates an instance of the object configured for the named binding
      **/
     public Object getInstance(String developerName) {
-        return getInstance(developerName, null);
+        return getInstance(developerName, null, false);
+    }
+
+    /**
+     * Creates an instance of the object configured for the named binding
+     *   (if newInstance is specified, always gets a fresh instance)
+     **/
+    public Object getInstance(String developerName, Boolean newInstance) {
+        return getInstance(developerName, null, newInstance);
     }
 
     /**
@@ -83,21 +108,41 @@ public class di_Injector {
      *   (if params is specified, implicitly uses the Provider interface)
      **/
     public Object getInstance(String developerName, Object params) {
+        return getInstance(developerName, params, false);
+    }
+
+    /**
+     * Creates an instance of the object configured for the named binding
+     *   (if params is specified, implicitly uses the Provider interface)
+     *   (if newInstance is specified, always gets a fresh instance)
+     **/
+    public Object getInstance(String developerName, Object params, Boolean newInstance) {
         if ( String.isBlank(developerName) ) {
             throw new InjectorException('Request for Binding cannot take "developerName" parameter of null');
         }
+
         List<di_Binding> bindingsFound = this.Bindings.byName( developerName.toLowerCase().trim() ).get();
+
         if ( bindingsFound == null || bindingsFound.isEmpty() ) {
             throw new InjectorException('Binding for "' + developerName + '" not found');
         }
-        return bindingsFound[0].getInstance(params);
+
+        return bindingsFound[0].getInstance(params, newInstance);
     }
 
     /**
      * Creates an instance of the object configured for the named binding and the binding SObjectType
      **/
     public Object getInstance(Type developerNameByType, Schema.SObjectType bindingSObjectType) {
-        return getInstance(developerNameByType, bindingSObjectType, null);
+        return getInstance(developerNameByType, bindingSObjectType, null, false);
+    }
+
+    /**
+     * Creates an instance of the object configured for the named binding and the binding SObjectType
+     *   (if newInstance is specified, always gets a fresh instance)
+     **/
+    public Object getInstance(Type developerNameByType, Schema.SObjectType bindingSObjectType, Boolean newInstance) {
+        return getInstance(developerNameByType, bindingSObjectType, null, newInstance);
     }
 
     /**
@@ -105,7 +150,16 @@ public class di_Injector {
      *   (if params is specified, implicitly uses the Provider interface)
      **/
     public Object getInstance(Type developerNameByType, Schema.SObjectType bindingSObjectType, Object params) {
-        return getInstance(developerNameByType == null ? null : developerNameByType.getName().toLowerCase(), bindingSObjectType, params);
+        return getInstance(developerNameByType?.getName()?.toLowerCase(), bindingSObjectType, params);
+    }
+
+    /**
+     * Creates an instance of the object configured for the named binding and the binding SObjectType
+     *   (if params is specified, implicitly uses the Provider interface)
+     *   (if newInstance is specified, always gets a fresh instance)
+     **/
+    public Object getInstance(Type developerNameByType, Schema.SObjectType bindingSObjectType, Object params, Boolean newInstance) {
+        return getInstance(developerNameByType?.getName()?.toLowerCase(), bindingSObjectType, params, newInstance);
     }
 
     /**
@@ -113,6 +167,15 @@ public class di_Injector {
      *   (if params is specified, implicitly uses the Provider interface)
      **/
     public Object getInstance(String developerName, Schema.SObjectType bindingSObjectType, Object params) {
+        return getInstance(developerName, bindingSObjectType, params, false);
+    }
+
+    /**
+     * Creates an instance of the object configured for the named binding and the binding SObjectType
+     *   (if params is specified, implicitly uses the Provider interface)
+     *   (if newInstance is specified, always gets a fresh instance)
+     **/
+    public Object getInstance(String developerName, Schema.SObjectType bindingSObjectType, Object params, Boolean newInstance) {
         if ( String.isBlank(developerName) ) {
             throw new InjectorException('Request for Binding cannot take "developerName" parameter of null');
         }
@@ -128,8 +191,8 @@ public class di_Injector {
         if ( bindingsFound == null || bindingsFound.isEmpty() || bindingsFound[0] == null) {
             throw new InjectorException('Binding for "' + developerName + '" and SObjectType "' + bindingSObjectType + '" not found');
         }
-        return bindingsFound[0].getInstance(params);
 
+        return bindingsFound[0].getInstance(params, newInstance);
     }
 
     /**
